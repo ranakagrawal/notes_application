@@ -24,7 +24,7 @@ const server = http.createServer(app);
 app.use(express.json());
 const corsOptions = {
   origin: ['http://localhost:3000', process.env.PROD_URL],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  // methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
