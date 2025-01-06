@@ -20,6 +20,10 @@ const Login = () => {
     }
   };
 
+  const handleSignUp = () => {
+    navigate('/signup');
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md w-full max-w-md">
@@ -51,6 +55,13 @@ const Login = () => {
           className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition duration-200"
         >
           Login
+        </button>
+        <button
+          type="button"
+          onClick={handleSignUp}
+          className="w-full bg-gray-500 text-white p-2 rounded hover:bg-gray-600 transition duration-200 mt-4"
+        >
+          Sign Up
         </button>
       </form>
     </div>

@@ -15,5 +15,5 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - API_URL=<backend url>
+      - REACT_APP_API_KEY=<backend url>
 
