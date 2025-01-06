@@ -21,14 +21,7 @@ const server = http.createServer(app);
 // });
 
 // app.set('io', io);
-app.use(express.json());
-const corsOptions = {
-  origin: ['http://localhost:3000', process.env.PROD_URL],
-  // methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-};
-
-app.use(cors(corsOptions));
+app.use(cors()); 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
