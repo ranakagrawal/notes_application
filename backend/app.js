@@ -22,7 +22,13 @@ const server = http.createServer(app);
 
 // app.set('io', io);
 app.use(express.json());
-app.use(cors());
+const corsOptions = {
+  origin: ['http://localhost:3000', process.env.PROD_URL],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
