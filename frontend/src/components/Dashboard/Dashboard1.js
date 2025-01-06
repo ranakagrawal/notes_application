@@ -191,6 +191,7 @@ function Dashboard() {
         }
       );
       alert('Note shared successfully.');
+      window.location.reload();
     } catch (error) {
       console.error('Error sharing note:', error);
       alert('Error sharing note. Please try again.');
