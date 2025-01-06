@@ -12,10 +12,10 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 7000;
 
-const server = http.createServer(app); // Create HTTP server
+const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:3000', // Allow frontend origin for development
+    origin: 'http://localhost:3000',
     methods: ['GET', 'POST'],
   },
 });
@@ -56,7 +56,7 @@ mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("Database and server connected!");
-    server.listen(port, () => { // Start the HTTP server, not just Express
+    server.listen(port, () => {
       console.log(`Server is running on port ${port}`);
     });
   })
