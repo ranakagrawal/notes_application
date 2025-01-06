@@ -6,12 +6,12 @@ import NoteList from './NoteList';
 import SharedNotes from './SharedNotes';
 import api from '../../services/api';
 
-
 function Dashboard() {
   const [notes, setNotes] = useState([]);
   const [sharedNotes, setSharedNotes] = useState([]);
   const [newNote, setNewNote] = useState({ title: '', content: '' });
   const [editingNote, setEditingNote] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const quillRef = useRef();
   const editorRef = useRef();
   const navigate = useNavigate();
@@ -176,25 +176,29 @@ function Dashboard() {
       navigate('/');
       return;
     }
-
+  
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       alert('Please enter a valid email address.');
       return;
     }
-
+  
     try {
-      await api.post(`/notes/${noteId}/share`,
+      const response = await api.post(`/notes/${noteId}/share`,
         { email },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      alert('Note shared successfully.');
-      window.location.reload();
+      if (response.status === 200) {
+        alert('Note shared successfully.');
+        fetchNotes();
+      } else {
+        alert(response.data.error);
+      }
     } catch (error) {
       console.error('Error sharing note:', error);
-      alert('Error sharing note. Please try again.');
+      alert(error.response.data.error);
     }
   };
 
@@ -202,6 +206,16 @@ function Dashboard() {
     localStorage.removeItem('token');
     navigate('/');
   };
+
+  const filteredNotes = notes.filter(note =>
+    note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    note.content.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredSharedNotes = sharedNotes.filter(note =>
+    note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    note.content.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="container mx-auto p-4">
@@ -230,14 +244,24 @@ function Dashboard() {
         </button>
       </div>
 
+      <div className="mb-8">
+        <input
+          type="text"
+          placeholder="Search notes..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full p-2 mb-4 border rounded"
+        />
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
           <h2 className="text-2xl font-bold mb-4">Your Notes</h2>
-          <NoteList notes={notes} onShare={handleShareNote} onEdit={handleEditNote} onDelete={handleDeleteNote} />
+          <NoteList notes={filteredNotes} onShare={handleShareNote} onEdit={handleEditNote} onDelete={handleDeleteNote} />
         </div>
         <div>
           <h2 className="text-2xl font-bold mb-4">Shared Notes</h2>
-          <SharedNotes notes={sharedNotes} onEdit={handleEditNote} onDelete={handleDeleteNote} />
+          <SharedNotes notes={filteredSharedNotes} onEdit={handleEditNote} onDelete={handleDeleteNote} />
         </div>
       </div>
     </div>

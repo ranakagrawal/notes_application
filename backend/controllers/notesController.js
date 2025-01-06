@@ -74,11 +74,11 @@ exports.updateNote = async (req, res) => {
 
     await note.save();
 
-    const io = req.app.get('io');
-    io.to(note._id.toString()).emit('note-updated', {
-      noteId: note._id,
-      changes,
-    });
+    // const io = req.app.get('io');
+    // io.to(note._id.toString()).emit('note-updated', {
+    //   noteId: note._id,
+    //   changes,
+    // });
 
     res.status(200).json({ data: note, message: 'Note updated successfully' });
   } catch (error) {
@@ -101,22 +101,30 @@ exports.shareNote = async (req, res) => {
     const note = await Note.findById(req.params.id);
     const user = await User.findOne({ email });
 
+    const requestingUser = await User.findById(req.user.id);
+
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    if (!note.sharedWith.includes(user._id)) {
-      note.sharedWith.push(user._id);
-      await note.save();
+    if (requestingUser.email === email) {
+      return res.status(400).json({ error: 'You cannot share a note with yourself' });
     }
 
+    if (note.sharedWith.includes(user._id)) {
+      return res.status(400).json({ error: 'User is already in the shared with list' });
+    }
+
+    note.sharedWith.push(user._id);
+    await note.save();
+
     // Notify the shared user
-    const io = req.app.get('io');
-    io.to(user._id.toString()).emit('note-shared', {
-      noteId: note._id,
-      title: note.title,
-      sharedBy: req.user.id,
-    });
+    // const io = req.app.get('io');
+    // io.to(user._id.toString()).emit('note-shared', {
+    //   noteId: note._id,
+    //   title: note.title,
+    //   sharedBy: req.user.id,
+    // });
 
     res.status(200).json({ data: note, message: 'Note shared successfully' });
   } catch (error) {

@@ -4,14 +4,11 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const bodyParser = require("body-parser");
 const routes = require("./routes");
-const http = require("http");
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 7000;
-
-const server = http.createServer(app);
 
 const corsOptions = {
   origin: (origin, callback) => {
@@ -37,7 +34,7 @@ mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("Database and server connected!");
-    server.listen(port, () => {
+    app.listen(port, () => {
       console.log(`Server is running on port ${port}`);
     });
   })
