@@ -1,0 +1,19 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "7000:7000"
+    environment:
+      - MONGO_URI=<mongo_uri>
+      - JWT_SECRET=syvoranotesapp
+      - PORT=7000
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+
+
+
